@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        const url = "https://kanban.jnj.com/api/v2/board/kanbanBoardDetails?id=1249";
+
+        const data = { username: 'zchen128', "password": "Victoria2012" };
+
+        // //POST request with body equal on data in JSON format
+        // fetch('https://kanban.jnj.com/api/login', {
+        // method: 'POST',
+        // headers: {
+        //     'Content-Type': 'application/json',
+        // },
+        // body: JSON.stringify(data),
+        // })
+        // .then((response) => response.json())
+        // //Then with the data from the response in JSON...
+        // .then((data) => {
+        // console.log('Success:', data);
+        // })
+        // //Then with the error genereted...
+        // .catch((error) => {
+        // console.error('Error:', error);
+        // });
+
+        fetch(url, {mathod:'GET',
+            headers: {'Authorization': 'Basic ' + btoa(data.username + ":" + data.password)}})
+            .then((resp) => resp.json())
+            .then(function(data) {
+                cards = data.cards
+                console.log(data)
+                tableData = [];
+                for (i = 0, len = cards.length; i < len; i++) {
+                    if ("Time Savings (Hours Annually)" in cards[i].custom) {
+                        time_savings = cards[i].custom['Time Savings (Hours Annually)'];
+                    } else {
+                        time_savings = 0;
+                    }
+
+                    if ("Financial Value Opportunity (Annually)" in cards[i].custom) {
+                        financial_value = cards[i].custom['Financial Value Opportunity (Annually)'];
+                    } else {
+                        financial_value = 0;
+                    }
+
+                    if ("JJT Defined Product & Solution" in cards[i].custom) {
+                        solution = cards[i].custom['JJT Defined Product & Solution'];
+                    } else {
+                        solution = "";
+                    }
+                    
+                    tableData.push({
+                        ID: cards[i].id,
+                        Lane_name: cards[i].lane_id,
+                        Title: cards[i].title,
+                        Actual_start_date: cards[i].actual_start_date,
+                        Actual_finish_date: cards[i].actual_finish_date,
+                        Time_savings_hours_annually: time_savings,
+                        Financial_value_opportunity_annually: financial_value, 
+                        Customer: cards[i].custom['Customer(s)'],
+                        Build_team: cards[i].custom['Build Team (Internal or Vendor)'],
+                        Defined_solution: solution,
+                    });
+                }
+                console.log(tableData);
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    </script>
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+</html>
